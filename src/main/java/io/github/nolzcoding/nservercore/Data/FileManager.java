@@ -14,6 +14,7 @@ public class FileManager {
     private final NServerCore nServerCore;
     private final File paperJar;
     private final File serverFolder;
+    private final File eula;
     private Configuration config;
 
 
@@ -44,6 +45,14 @@ public class FileManager {
             server.mkdir();
         }
 
+        File eula = new File(dataFolder, "eula.txt");
+
+        if (!eula.exists()) {
+            throw new FileNotFoundException("Did not find " + eula.getAbsolutePath());
+        }
+
+        this.eula = eula;
+
         serverFolder = server;
 
         setupConfig();
@@ -73,5 +82,9 @@ public class FileManager {
 
     public Configuration getConfig() {
         return config;
+    }
+
+    public File getEula() {
+        return eula;
     }
 }
