@@ -1,0 +1,5 @@
+name: NServerCore
+version: ${project.version}
+main: io.github.nolzcoding.nservercore.NServerCore
+description: Plugin that allows players to create their own servers
+author: NolzCoding
