@@ -75,7 +75,7 @@ public class ServerUtils {
                         properties.store(fileOutputStream, null);
                         fileOutputStream.close();
 
-                        Process newProcess = Runtime.getRuntime().exec("java -Xms2G -Xmx2G -jar paper.jar --nogui", null,  folder);
+                        //Process newProcess = Runtime.getRuntime().exec("java -Xms2G -Xmx2G -jar paper.jar --nogui", null,  folder);
 
                         nServerCore.getProxy().constructServerInfo(name, Util.getAddr("localhost:" + port), "idk", false);
 
