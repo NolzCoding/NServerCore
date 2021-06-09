@@ -18,10 +18,8 @@ public class DataBase {
     private final ConnectionString connectionString;
     private final MongoDatabase database;
     private final MongoCollection<Document> collection;
-    private final NServerCore nServerCore;
 
     public DataBase(NServerCore nServerCore, FileManager fileManager) {
-        this.nServerCore = nServerCore;
         connectionString = new ConnectionString(fileManager.getConfig().getString("con"));
 
         MongoClientSettings settings = MongoClientSettings.builder()
