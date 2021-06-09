@@ -14,7 +14,8 @@ public class FileManager {
     private final NServerCore nServerCore;
     private final File paperJar;
     private final File serverFolder;
-    private final File eula;
+    private final File spigotyml;
+    private final File serverProperties;
     private Configuration config;
 
 
@@ -45,13 +46,22 @@ public class FileManager {
             server.mkdir();
         }
 
-        File eula = new File(dataFolder, "eula.txt");
+        File spigotyml = new File(dataFolder, "spigot.yml");
 
-        if (!eula.exists()) {
-            throw new FileNotFoundException("Did not find " + eula.getAbsolutePath());
+        if (!spigotyml.exists()) {
+            throw new FileNotFoundException("Did not find " + spigotyml.getAbsolutePath());
         }
 
-        this.eula = eula;
+        File serverProperties = new File(dataFolder, "server.properties");
+
+        if (!serverProperties.exists()) {
+            throw new FileNotFoundException("Did not find " + serverProperties.getAbsolutePath());
+        }
+
+        this.serverProperties = serverProperties;
+
+
+        this.spigotyml = spigotyml;
 
         serverFolder = server;
 
@@ -84,7 +94,11 @@ public class FileManager {
         return config;
     }
 
-    public File getEula() {
-        return eula;
+    public File getSpigotyml() {
+        return spigotyml;
+    }
+
+    public File getServerProperties() {
+        return serverProperties;
     }
 }

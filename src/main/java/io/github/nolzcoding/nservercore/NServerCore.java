@@ -7,21 +7,13 @@ import io.github.nolzcoding.nservercore.Utils.ServerUtils;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
+import java.util.ArrayList;
+
 public final class NServerCore extends Plugin {
     private static NServerCore nServerCore;
 
-    public ServerUtils getServerUtils() {
-        return serverUtils;
-    }
 
-    public FileManager getFileManager() {
-        return fileManager;
-    }
-
-    public DataBase getDataBase() {
-        return dataBase;
-    }
-
+    private final ArrayList<Process> processes = new ArrayList<>();
     private ServerUtils serverUtils;
     private FileManager fileManager;
     private DataBase dataBase;
@@ -37,7 +29,7 @@ public final class NServerCore extends Plugin {
                 "start",
                 "nolzserver.start",
                 "startserver"
-                ));
+        ));
 
         try {
             fileManager = new FileManager(this);
@@ -55,8 +47,33 @@ public final class NServerCore extends Plugin {
 
     }
 
+
+
     @Override
     public void onDisable() {
 
     }
+
+    private void endProcesses() {
+        for (Process process : processes) {
+            process.destroy();
+        }
+    }
+
+    public ServerUtils getServerUtils() {
+        return serverUtils;
+    }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public DataBase getDataBase() {
+        return dataBase;
+    }
+
+    public void addProcess(Process process) {
+        processes.add(process);
+    }
+
 }

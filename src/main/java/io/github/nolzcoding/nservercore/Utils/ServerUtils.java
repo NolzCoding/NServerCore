@@ -4,6 +4,8 @@ import io.github.nolzcoding.nservercore.Data.FileManager;
 import io.github.nolzcoding.nservercore.JSON.ServerMeta;
 import io.github.nolzcoding.nservercore.NServerCore;
 import net.md_5.bungee.Util;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.File;
@@ -38,56 +40,28 @@ public class ServerUtils {
 
             try {
                 Files.copy(original, copied, StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(fileManager.getServerProperties().toPath(), new File(folder, "server.properties").toPath(), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(fileManager.getSpigotyml().toPath() , new File(folder, "spigot.yml").toPath(), StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
 
             Process process = null;
-
+            int port = findOpenPort();
             try {
-                process = Runtime.getRuntime().exec("java -Xms2G -Xmx2G -jar paper.jar --nogui", null,  folder);
+                process = Runtime.getRuntime().exec("java -Xms2G -Xmx2G -Dcom.mojang.eula.agree=true -jar paper.jar --nogui -p " + port, null,  folder);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            Process finalProcess = process;
-            nServerCore.getProxy().getScheduler().runAsync(nServerCore, new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        finalProcess.waitFor();
-                        Path copiedEula = new File(folder, "eula.txt").toPath();
-                        Files.copy(fileManager.getEula().toPath(), copiedEula, StandardCopyOption.REPLACE_EXISTING);
+            nServerCore.addProcess(process);
+
+            ServerInfo serverInfo = nServerCore.getProxy().constructServerInfo(name, new InetSocketAddress("localhost", port), "idk", false);
+
+            ProxyServer.getInstance().getServers().put(name, serverInfo);
 
 
-
-                        File propfile = new File(folder, "server.properties");
-
-                        int port = findOpenPort();
-
-                        FileInputStream fileInputStream = new FileInputStream(propfile);
-                        Properties properties = new Properties();
-                        properties.load(fileInputStream);
-                        fileInputStream.close();
-
-                        FileOutputStream fileOutputStream = new FileOutputStream(propfile);
-                        properties.setProperty("server-port", Integer.toString(port));
-                        properties.store(fileOutputStream, null);
-                        fileOutputStream.close();
-
-                        Process newProcess = Runtime.getRuntime().exec("java -Xms2G -Xmx2G -jar paper.jar --nogui", null,  folder);
-
-                        nServerCore.getProxy().constructServerInfo(name, Util.getAddr("localhost:" + port), "idk", false);
-
-
-                    } catch (InterruptedException | IOException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            });
-
-//java -Xms2G -Xmx2G -jar paper.jar --nogui
 
         }
         else {
